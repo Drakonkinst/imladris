@@ -1,0 +1,7 @@
+{
+    "type": "module",
+    "dependencies": {
+        "googleapis": "^88.2.0",
+        "node-fetch": "^3.0.0"
+    }
+}
