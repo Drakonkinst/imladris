@@ -178,6 +178,47 @@ const SheetsDatabaseService = (() => {
             });
         }
         
+        deleteRows(rowIndices) {
+            if(rowIndices.length <= 0) {
+                console.log("Warning: Row indices list is empty");
+                return;
+            }
+            // Ensure inverse order
+            rowIndices = rowIndices.sort().reverse();
+            
+            const requestList = [];
+            
+            for(let rowIndex of rowIndices) {
+                console.log("Deleting " + rowIndex + ", " + (rowIndex + 1));
+                requestList.push({
+                    "deleteDimension": {
+                        "range": {
+                            //"sheetId": this.spreadsheetId,
+                            "dimension": "ROWS",
+                            "startIndex": rowIndex - 1,
+                            "endIndex": rowIndex
+                        }
+                    }
+                });
+            }
+            
+            this.sheets.spreadsheets.batchUpdate({
+                "auth": this.jwtClient,
+                "spreadsheetId": this.spreadsheetId,
+                "resource": {
+                    "requests": requestList
+                }
+            }, (err, response) => {
+                if(err) {
+                    console.log("Error: Google Sheets API returned an error: " + err);
+                } else {
+                    console.log(response.data);
+                }
+            });
+        }
+        
+        // TODO: operation for a single row/update
+        
         getDataRange() {
             return this.dataRange;
         }

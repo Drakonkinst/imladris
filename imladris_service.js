@@ -107,6 +107,9 @@ const ImladrisService = (() => {
                 tagStr = tags.join(",");
             }
             this.databaseService.addEntry([ id, link, type, name, tagStr, description ]);
+            
+            // TODO: add image
+            // TODO: 
         }
         
         // Returns true if database is already refreshed, false if it is updating
@@ -198,6 +201,32 @@ const ImladrisService = (() => {
             return data;
         }
         
+        
+        
+        
+        
+        printDatabase() {
+            this.databaseService.displayAllData();
+        }
+        
+        updateItem(id) {
+            
+        }
+        
+        deleteItem(id) {
+            // TODO: image deletion
+        }
+        
+        batchDelete(idList) {
+            this.databaseService.getMatchingRows("Id", id => {
+                return idList.includes(id);
+            }, (rowIndices, rowValues) => {
+                this.databaseService.deleteRows(rowIndices);
+            });
+        }
+        
+        // temp/private functions
+        
         filterItems(key, filter, callback, firstOnly) {
             this.databaseService.getMatchingRows(key, filter, (rowIndices, rowValues) => {
                 callback(rowIndices, rowValues);
@@ -207,23 +236,19 @@ const ImladrisService = (() => {
         updateItems(key, filter, mutator, firstOnly) {
             this.databaseService.getMatchingRows(key, filter, (rowIndices, rowValues) => {
                 const mutatedRows = [];
-                
+
                 for(let row of rowValues) {
                     mutatedRows.push(mutator(row));
                 }
-                
+
                 this.databaseService.updateRows(rowIndices, mutatedRows);
             }, firstOnly);
         }
-        
+
         deleteItems(key, filter, callback, firstOnly) {
             this.databaseService.getMatchingRows(key, filter, (rowIndices, rowValues) => {
                 callback(result);
             }, firstOnly);
-        }
-        
-        printDatabase() {
-            this.databaseService.displayAllData();
         }
     }
 })();
@@ -258,9 +283,12 @@ if(process.argv[1] === fileURLToPath(import.meta.url)) {
         console.log(rowList);
     }, false);*/
     
+    /*
     imladrisService.updateItems("Id", id => true, row => {
         return setAtIndex(row, 3, "Boomer");
-    });
+    });*/
+    
+    imladrisService.batchDelete(["ab38d68c-0b9f-4366-a583-743ae68f3a3d", "59307e2e-f67c-4b3c-b23c-67ef515f1f92"]);
     
     //imladrisService.addItem("google.com", "link", "Google", ["google", "hello world"], "description");
     //imladrisService.printDatabase();
